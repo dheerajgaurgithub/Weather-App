@@ -1,17 +1,27 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import weatherRoute from './routes/weather.js'; // Use .js if using ES Modules
+const express = require("express");
+const axios = require("axios");
+const dotenv = require("dotenv");
 
 dotenv.config();
-
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-app.use('/weather', weatherRoute);
+app.get("/weather", async (req, res) => {
+  const city = req.query.city;
+  const apiKey = process.env.OPENWEATHERMAP_API_KEY;
+  try {
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
+    const weatherData = {
+      name: response.data.name,
+      weather: response.data.weather,
+      main: response.data.main,
+      wind: response.data.wind,
+    };
+    res.json(weatherData);
+  } catch (err) {
+    res.status(500).send("Error fetching weather data");
+  }
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
 });

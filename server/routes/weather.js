@@ -18,7 +18,9 @@ router.get('/', async (req, res) => {
       date: item.dt_txt.split(' ')[0],
       temperature: item.main.temp,
       icon: item.weather[0].icon,
-      description: item.weather[0].description
+      description: item.weather[0].description,
+      humidity: item.main.humidity,      // Added humidity
+      windSpeed: item.wind.speed        // Added wind speed
     }));
 
     res.json({

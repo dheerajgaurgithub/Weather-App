@@ -11,7 +11,8 @@ const App = () => {
   const fetchWeather = async (city) => {
     try {
       const response = await axios.get(`http://localhost:5000/weather?city=${city}`);
-      setWeatherData(response.data);
+      console.log("Fetched Weather Data:", response.data); // Log API response
+      setWeatherData(response.data); // Update with forecast and city
     } catch (err) {
       console.error("Error fetching weather:", err);
     }
@@ -34,7 +35,13 @@ const App = () => {
       <div className="app-container">
         <h1>Weather Dashboard</h1>
         <SearchBar onSearch={fetchWeather} />
-        {weatherData && <WeatherCard data={weatherData} />}
+        {weatherData && weatherData.forecast.length > 0 ? (
+          weatherData.forecast.map((data, index) => (
+            <WeatherCard key={index} data={data} city={weatherData.city} />
+          ))
+        ) : (
+          <p>Loading weather data...</p>
+        )}
       </div>
     </div>
   );
